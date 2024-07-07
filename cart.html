@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Metic Apparel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .cart-container {
+            padding: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .cart-item h2 {
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        .cart-item .price, .cart-item .quantity {
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        .cart-item button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .cart-item button:hover {
+            background-color: #111;
+        }
+
+        .cart-total {
+            font-size: 1.5em;
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Cart - Metic Apparel</h1>
+</header>
+
+<div class="cart-container">
+    <div class="cart-items"></div>
+    <div class="cart-total"></div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartItemsContainer = document.querySelector('.cart-items');
+    const cartTotalContainer = document.querySelector('.cart-total');
+
+    function displayCartItems() {
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+        cart.forEach((item, index) => {
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('cart-item');
+            cartItem.innerHTML = `
+                <h2>${item.name}</h2>
+                <p class="quantity">Quantity: ${item.quantity}</p>
+                <p class="price">$${item.price * item.quantity}</p>
+                <button data-index="${index}">Remove</button>
+            `;
+            cartItemsContainer.appendChild(cartItem);
+            total += item.price * item.quantity;
+        });
+        cartTotalContainer.textContent = `Total: $${total}`;
+
+        const removeButtons = document.querySelectorAll('.cart-item button');
+        removeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const index = e.target.dataset.index;
+                removeFromCart(index);
+            });
+        });
+    }
+
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        displayCartItems();
+    }
+
+    displayCartItems();
+});
+</script>
+
+</body>
+</html>
