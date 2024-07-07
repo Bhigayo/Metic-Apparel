@@ -181,3 +181,52 @@ var slideIndex = 0;
             });
         }
     });
+const cartItems = [
+    {
+        id: 1,
+        name: "HF PANEL CAP ORANGE - ONE SIZE FITS ALL, ORANGE",
+        price: 100.00,
+        quantity: 1,
+        image: "path/to/image.png"
+    }
+];
+
+function updateCart() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    cartItemsContainer.innerHTML = '';
+    let subtotal = 0;
+    
+    cartItems.forEach(item => {
+        subtotal += item.price * item.quantity;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><button class="remove-btn" data-id="${item.id}">x</button><img src="${item.image}" alt="${item.name}">${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>${item.quantity}</td>
+            <td>$${(item.price * item.quantity).toFixed(2)}</td>
+        `;
+        cartItemsContainer.appendChild(row);
+    });
+
+    const shipping = 18.00; // Adjust based on your shipping logic
+    const total = subtotal + shipping;
+    
+    document.getElementById('subtotal').innerText = `$${subtotal.toFixed(2)}`;
+    document.getElementById('shipping').innerText = `$${shipping.toFixed(2)}`;
+    document.getElementById('total').innerText = `$${total.toFixed(2)}`;
+    
+    document.querySelectorAll('.remove-btn').forEach(button => {
+        button.addEventListener('click', removeFromCart);
+    });
+}
+
+function removeFromCart(event) {
+    const itemId = parseInt(event.target.getAttribute('data-id'));
+    const itemIndex = cartItems.findIndex(item => item.id === itemId);
+    if (itemIndex > -1) {
+        cartItems.splice(itemIndex, 1);
+    }
+    updateCart();
+}
+
+document.addEventListener('DOMContentLoaded', updateCart);
